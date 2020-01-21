@@ -14,10 +14,10 @@ namespace Generics {
 			std::cout << *it << std::endl;
 
 		IC2<int, 1, double, 2> ic2;
-		ic2.Add<int, 1>(1);
-		//ic2.Add<int, 1>(1.2);
-		ic2.Add<double, 2>(2.3);
-		//res = ic2.Add<double, 2>(2);
+		ic2.Add<int>(1);
+		//ic2.Add<int>(1.2);
+		ic2.Add<double>(2.3);
+		//res = ic2.Add<double>(2);
 		//assert(res == ICAddResult::TYPE_OVERFLOW);
 
 		return 0;

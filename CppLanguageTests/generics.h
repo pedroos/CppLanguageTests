@@ -52,6 +52,7 @@ namespace Generics {
 		std::array<B, BQ> b;
 	public:
 		IC2() {
+			// Initialize an array for each component of the collection, expressed as a type
 			a = {};
 			b = {};
 			for (int i = 0; i < AQ; ++i) {
@@ -61,22 +62,32 @@ namespace Generics {
 				b[i] = default_int;
 			}
 		}
-		template<typename T, int TQ>
+		template<typename T>
 		requires IsAOrB<T, A, B>
 		ICAddResult Add(T x) {
-			int i = 0;
-			std::array<T, TQ> arr;
-			if constexpr (std::is_same_v<T, A>) arr = a; else arr = b;
+			// Evaluate whether T is A or B
+			constexpr bool tIsA = std::is_same_v<T, A>;
+
+			// Get a pointer to either a or b arrays, depending on T
+			std::array<T, tIsA ? AQ : BQ>* arr;
+			if constexpr (tIsA) arr = &a; else arr = &b;
+
+			// Set the desired length of the array as the same as the class parameters AQ or BQ, 
+			// depending on T
 			constexpr int length = std::is_same_v<T, A> ? AQ : BQ;
+
+			int i = 0;
 			while (true) {
+				// Find the first non-initialized position in the array and write the value
+				// If we reach the end of the array without writing the value, return an error
 				if (i + 1 > length) return ICAddResult::TYPE_OVERFLOW;
-				if (arr[i] != default_int) {
+				if ((*arr)[i] != default_int) {
 					++i;
 					continue;
 				}
 				break;
 			}
-			arr[i] = x;
+			(*arr)[i] = x;
 			return ICAddResult::OK;
 		}
 		/*typename const std::array<A, AQ> GetA() {
